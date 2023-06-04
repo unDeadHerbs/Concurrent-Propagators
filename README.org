@@ -1,0 +1,1 @@
+This is a program that solves simple sudokus using propagators.  This is a learning exercise.
