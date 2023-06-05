@@ -40,6 +40,7 @@ struct SudokuCell:Cell{
 };
 struct SudokuOneHot:Propogator{
 	// The constraint that only one can have a value
+	bool known[9]={0,0,0, 0,0,0, 0,0,0};
 	SudokuCell* cells[9];
 	SudokuOneHot(SudokuCell* a,SudokuCell* b,SudokuCell* c,
 							 SudokuCell* d,SudokuCell* e,SudokuCell* f,
@@ -51,12 +52,13 @@ struct SudokuOneHot:Propogator{
 			cells[j]->watchers.push_back(this);
 	}
 	void alert(){
-		// TODO: This is very inefficient; but, readable and correct.
 		for(int i=0;i<9;i++)
 			if(cells[i]->is_found())
-				for(int j=0;j<9;j++)
-					if(i!=j)
-						cells[j]->ban(cells[i]->val());}
+				if(!known[i]){
+					known[i]=true;;
+					for(int j=0;j<9;j++)
+						if(!known[j])
+							cells[j]->ban(cells[i]->val());}}
 };
 
 void grid_display(SudokuCell grid[81]){
