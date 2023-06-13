@@ -205,170 +205,59 @@ struct GridPrinter:Propogator{
 bool sudoku_solver(int initial[9][9]){
 	SudokuCell grid[81];
 
-	// The basic "only one of each" requirement
-	AtMostOneEach rcb_most[27]={
-		// rows
-		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[0*9+6],&grid[0*9+7],&grid[0*9+8]},
-		{&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8]},
-		{&grid[2*9+0],&grid[2*9+1],&grid[2*9+2],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]},
-		
-		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[3*9+6],&grid[3*9+7],&grid[3*9+8]},
-		{&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8]},
-		{&grid[5*9+0],&grid[5*9+1],&grid[5*9+2],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]},
-		
-		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[6*9+6],&grid[6*9+7],&grid[6*9+8]},
-		{&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8]},
-		{&grid[8*9+0],&grid[8*9+1],&grid[8*9+2],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]},
-
-		// columns
-		{&grid[0*9+0],&grid[1*9+0],&grid[2*9+0],&grid[3*9+0],&grid[4*9+0],&grid[5*9+0],&grid[6*9+0],&grid[7*9+0],&grid[8*9+0]},
-		{&grid[0*9+1],&grid[1*9+1],&grid[2*9+1],&grid[3*9+1],&grid[4*9+1],&grid[5*9+1],&grid[6*9+1],&grid[7*9+1],&grid[8*9+1]},
-		{&grid[0*9+2],&grid[1*9+2],&grid[2*9+2],&grid[3*9+2],&grid[4*9+2],&grid[5*9+2],&grid[6*9+2],&grid[7*9+2],&grid[8*9+2]},
-		
-		{&grid[0*9+3],&grid[1*9+3],&grid[2*9+3],&grid[3*9+3],&grid[4*9+3],&grid[5*9+3],&grid[6*9+3],&grid[7*9+3],&grid[8*9+3]},
-		{&grid[0*9+4],&grid[1*9+4],&grid[2*9+4],&grid[3*9+4],&grid[4*9+4],&grid[5*9+4],&grid[6*9+4],&grid[7*9+4],&grid[8*9+4]},
-		{&grid[0*9+5],&grid[1*9+5],&grid[2*9+5],&grid[3*9+5],&grid[4*9+5],&grid[5*9+5],&grid[6*9+5],&grid[7*9+5],&grid[8*9+5]},
-
-		{&grid[0*9+6],&grid[1*9+6],&grid[2*9+6],&grid[3*9+6],&grid[4*9+6],&grid[5*9+6],&grid[6*9+6],&grid[7*9+6],&grid[8*9+6]},
-		{&grid[0*9+7],&grid[1*9+7],&grid[2*9+7],&grid[3*9+7],&grid[4*9+7],&grid[5*9+7],&grid[6*9+7],&grid[7*9+7],&grid[8*9+7]},
-		{&grid[0*9+8],&grid[1*9+8],&grid[2*9+8],&grid[3*9+8],&grid[4*9+8],&grid[5*9+8],&grid[6*9+8],&grid[7*9+8],&grid[8*9+8]},
+#define sudoku_27 {																											\
+			/* rows*/																													\
+		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[0*9+6],&grid[0*9+7],&grid[0*9+8]}, \
+		{&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8]}, \
+		{&grid[2*9+0],&grid[2*9+1],&grid[2*9+2],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]}, \
+																																				\
+		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[3*9+6],&grid[3*9+7],&grid[3*9+8]}, \
+		{&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8]}, \
+		{&grid[5*9+0],&grid[5*9+1],&grid[5*9+2],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]}, \
+																																				\
+		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[6*9+6],&grid[6*9+7],&grid[6*9+8]}, \
+		{&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8]}, \
+		{&grid[8*9+0],&grid[8*9+1],&grid[8*9+2],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]}, \
+																																				\
+			/* columns*/																											\
+		{&grid[0*9+0],&grid[1*9+0],&grid[2*9+0],&grid[3*9+0],&grid[4*9+0],&grid[5*9+0],&grid[6*9+0],&grid[7*9+0],&grid[8*9+0]}, \
+		{&grid[0*9+1],&grid[1*9+1],&grid[2*9+1],&grid[3*9+1],&grid[4*9+1],&grid[5*9+1],&grid[6*9+1],&grid[7*9+1],&grid[8*9+1]}, \
+		{&grid[0*9+2],&grid[1*9+2],&grid[2*9+2],&grid[3*9+2],&grid[4*9+2],&grid[5*9+2],&grid[6*9+2],&grid[7*9+2],&grid[8*9+2]}, \
+																																				\
+		{&grid[0*9+3],&grid[1*9+3],&grid[2*9+3],&grid[3*9+3],&grid[4*9+3],&grid[5*9+3],&grid[6*9+3],&grid[7*9+3],&grid[8*9+3]}, \
+		{&grid[0*9+4],&grid[1*9+4],&grid[2*9+4],&grid[3*9+4],&grid[4*9+4],&grid[5*9+4],&grid[6*9+4],&grid[7*9+4],&grid[8*9+4]}, \
+		{&grid[0*9+5],&grid[1*9+5],&grid[2*9+5],&grid[3*9+5],&grid[4*9+5],&grid[5*9+5],&grid[6*9+5],&grid[7*9+5],&grid[8*9+5]}, \
+																																				\
+		{&grid[0*9+6],&grid[1*9+6],&grid[2*9+6],&grid[3*9+6],&grid[4*9+6],&grid[5*9+6],&grid[6*9+6],&grid[7*9+6],&grid[8*9+6]}, \
+		{&grid[0*9+7],&grid[1*9+7],&grid[2*9+7],&grid[3*9+7],&grid[4*9+7],&grid[5*9+7],&grid[6*9+7],&grid[7*9+7],&grid[8*9+7]}, \
+		{&grid[0*9+8],&grid[1*9+8],&grid[2*9+8],&grid[3*9+8],&grid[4*9+8],&grid[5*9+8],&grid[6*9+8],&grid[7*9+8],&grid[8*9+8]}, \
+																																				\
+			/* boxes */																												\
+		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[2*9+0],&grid[2*9+1],&grid[2*9+2]}, \
+		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[5*9+0],&grid[5*9+1],&grid[5*9+2]}, \
+		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[8*9+0],&grid[8*9+1],&grid[8*9+2]}, \
+																																				\
+		{&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5]}, \
+		{&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5]}, \
+		{&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5]}, \
+																																				\
+		{&grid[0*9+6],&grid[0*9+7],&grid[0*9+8],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]}, \
+		{&grid[3*9+6],&grid[3*9+7],&grid[3*9+8],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]}, \
+		{&grid[6*9+6],&grid[6*9+7],&grid[6*9+8],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]}} \
 	
-		// boxes
-		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[2*9+0],&grid[2*9+1],&grid[2*9+2]},
-		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[5*9+0],&grid[5*9+1],&grid[5*9+2]},
-		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[8*9+0],&grid[8*9+1],&grid[8*9+2]},
-		
-		{&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5]},
-		{&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5]},
-		{&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5]},
-		
-		{&grid[0*9+6],&grid[0*9+7],&grid[0*9+8],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]},
-		{&grid[3*9+6],&grid[3*9+7],&grid[3*9+8],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]},
-		{&grid[6*9+6],&grid[6*9+7],&grid[6*9+8],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]}};
+	// The basic "only one of each" requirement
+	AtMostOneEach rcb_most[27]=sudoku_27;
 	(void)rcb_most;
 
-		AtLeastOneEach rcb_least[27]={
-		// rows
-		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[0*9+6],&grid[0*9+7],&grid[0*9+8]},
-		{&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8]},
-		{&grid[2*9+0],&grid[2*9+1],&grid[2*9+2],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]},
-		
-		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[3*9+6],&grid[3*9+7],&grid[3*9+8]},
-		{&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8]},
-		{&grid[5*9+0],&grid[5*9+1],&grid[5*9+2],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]},
-		
-		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[6*9+6],&grid[6*9+7],&grid[6*9+8]},
-		{&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8]},
-		{&grid[8*9+0],&grid[8*9+1],&grid[8*9+2],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]},
+	AtLeastOneEach rcb_least[27]=sudoku_27;
+	(void)rcb_least;
 
-		// columns
-		{&grid[0*9+0],&grid[1*9+0],&grid[2*9+0],&grid[3*9+0],&grid[4*9+0],&grid[5*9+0],&grid[6*9+0],&grid[7*9+0],&grid[8*9+0]},
-		{&grid[0*9+1],&grid[1*9+1],&grid[2*9+1],&grid[3*9+1],&grid[4*9+1],&grid[5*9+1],&grid[6*9+1],&grid[7*9+1],&grid[8*9+1]},
-		{&grid[0*9+2],&grid[1*9+2],&grid[2*9+2],&grid[3*9+2],&grid[4*9+2],&grid[5*9+2],&grid[6*9+2],&grid[7*9+2],&grid[8*9+2]},
-		
-		{&grid[0*9+3],&grid[1*9+3],&grid[2*9+3],&grid[3*9+3],&grid[4*9+3],&grid[5*9+3],&grid[6*9+3],&grid[7*9+3],&grid[8*9+3]},
-		{&grid[0*9+4],&grid[1*9+4],&grid[2*9+4],&grid[3*9+4],&grid[4*9+4],&grid[5*9+4],&grid[6*9+4],&grid[7*9+4],&grid[8*9+4]},
-		{&grid[0*9+5],&grid[1*9+5],&grid[2*9+5],&grid[3*9+5],&grid[4*9+5],&grid[5*9+5],&grid[6*9+5],&grid[7*9+5],&grid[8*9+5]},
+	// The logic around finding pairs
+	PairLogic_Most rcb_pair_most[27]=sudoku_27;
+	(void)rcb_pair_most;
 
-		{&grid[0*9+6],&grid[1*9+6],&grid[2*9+6],&grid[3*9+6],&grid[4*9+6],&grid[5*9+6],&grid[6*9+6],&grid[7*9+6],&grid[8*9+6]},
-		{&grid[0*9+7],&grid[1*9+7],&grid[2*9+7],&grid[3*9+7],&grid[4*9+7],&grid[5*9+7],&grid[6*9+7],&grid[7*9+7],&grid[8*9+7]},
-		{&grid[0*9+8],&grid[1*9+8],&grid[2*9+8],&grid[3*9+8],&grid[4*9+8],&grid[5*9+8],&grid[6*9+8],&grid[7*9+8],&grid[8*9+8]},
-	
-		// boxes
-		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[2*9+0],&grid[2*9+1],&grid[2*9+2]},
-		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[5*9+0],&grid[5*9+1],&grid[5*9+2]},
-		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[8*9+0],&grid[8*9+1],&grid[8*9+2]},
-		
-		{&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5]},
-		{&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5]},
-		{&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5]},
-		
-		{&grid[0*9+6],&grid[0*9+7],&grid[0*9+8],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]},
-		{&grid[3*9+6],&grid[3*9+7],&grid[3*9+8],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]},
-		{&grid[6*9+6],&grid[6*9+7],&grid[6*9+8],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]}};
-		(void)rcb_least;
-
-		PairLogic_Most rcb_pair_most[27]={
-		// rows
-		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[0*9+6],&grid[0*9+7],&grid[0*9+8]},
-		{&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8]},
-		{&grid[2*9+0],&grid[2*9+1],&grid[2*9+2],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]},
-		
-		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[3*9+6],&grid[3*9+7],&grid[3*9+8]},
-		{&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8]},
-		{&grid[5*9+0],&grid[5*9+1],&grid[5*9+2],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]},
-		
-		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[6*9+6],&grid[6*9+7],&grid[6*9+8]},
-		{&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8]},
-		{&grid[8*9+0],&grid[8*9+1],&grid[8*9+2],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]},
-
-		// columns
-		{&grid[0*9+0],&grid[1*9+0],&grid[2*9+0],&grid[3*9+0],&grid[4*9+0],&grid[5*9+0],&grid[6*9+0],&grid[7*9+0],&grid[8*9+0]},
-		{&grid[0*9+1],&grid[1*9+1],&grid[2*9+1],&grid[3*9+1],&grid[4*9+1],&grid[5*9+1],&grid[6*9+1],&grid[7*9+1],&grid[8*9+1]},
-		{&grid[0*9+2],&grid[1*9+2],&grid[2*9+2],&grid[3*9+2],&grid[4*9+2],&grid[5*9+2],&grid[6*9+2],&grid[7*9+2],&grid[8*9+2]},
-		
-		{&grid[0*9+3],&grid[1*9+3],&grid[2*9+3],&grid[3*9+3],&grid[4*9+3],&grid[5*9+3],&grid[6*9+3],&grid[7*9+3],&grid[8*9+3]},
-		{&grid[0*9+4],&grid[1*9+4],&grid[2*9+4],&grid[3*9+4],&grid[4*9+4],&grid[5*9+4],&grid[6*9+4],&grid[7*9+4],&grid[8*9+4]},
-		{&grid[0*9+5],&grid[1*9+5],&grid[2*9+5],&grid[3*9+5],&grid[4*9+5],&grid[5*9+5],&grid[6*9+5],&grid[7*9+5],&grid[8*9+5]},
-
-		{&grid[0*9+6],&grid[1*9+6],&grid[2*9+6],&grid[3*9+6],&grid[4*9+6],&grid[5*9+6],&grid[6*9+6],&grid[7*9+6],&grid[8*9+6]},
-		{&grid[0*9+7],&grid[1*9+7],&grid[2*9+7],&grid[3*9+7],&grid[4*9+7],&grid[5*9+7],&grid[6*9+7],&grid[7*9+7],&grid[8*9+7]},
-		{&grid[0*9+8],&grid[1*9+8],&grid[2*9+8],&grid[3*9+8],&grid[4*9+8],&grid[5*9+8],&grid[6*9+8],&grid[7*9+8],&grid[8*9+8]},
-	
-		// boxes
-		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[2*9+0],&grid[2*9+1],&grid[2*9+2]},
-		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[5*9+0],&grid[5*9+1],&grid[5*9+2]},
-		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[8*9+0],&grid[8*9+1],&grid[8*9+2]},
-		
-		{&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5]},
-		{&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5]},
-		{&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5]},
-		
-		{&grid[0*9+6],&grid[0*9+7],&grid[0*9+8],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]},
-		{&grid[3*9+6],&grid[3*9+7],&grid[3*9+8],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]},
-		{&grid[6*9+6],&grid[6*9+7],&grid[6*9+8],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]}};
-		(void)rcb_pair_most;
-
-		PairLogic_Least rcb_pair_least[27]={
-		// rows
-		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[0*9+6],&grid[0*9+7],&grid[0*9+8]},
-		{&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8]},
-		{&grid[2*9+0],&grid[2*9+1],&grid[2*9+2],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]},
-		
-		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[3*9+6],&grid[3*9+7],&grid[3*9+8]},
-		{&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8]},
-		{&grid[5*9+0],&grid[5*9+1],&grid[5*9+2],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]},
-		
-		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[6*9+6],&grid[6*9+7],&grid[6*9+8]},
-		{&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8]},
-		{&grid[8*9+0],&grid[8*9+1],&grid[8*9+2],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]},
-
-		// columns
-		{&grid[0*9+0],&grid[1*9+0],&grid[2*9+0],&grid[3*9+0],&grid[4*9+0],&grid[5*9+0],&grid[6*9+0],&grid[7*9+0],&grid[8*9+0]},
-		{&grid[0*9+1],&grid[1*9+1],&grid[2*9+1],&grid[3*9+1],&grid[4*9+1],&grid[5*9+1],&grid[6*9+1],&grid[7*9+1],&grid[8*9+1]},
-		{&grid[0*9+2],&grid[1*9+2],&grid[2*9+2],&grid[3*9+2],&grid[4*9+2],&grid[5*9+2],&grid[6*9+2],&grid[7*9+2],&grid[8*9+2]},
-		
-		{&grid[0*9+3],&grid[1*9+3],&grid[2*9+3],&grid[3*9+3],&grid[4*9+3],&grid[5*9+3],&grid[6*9+3],&grid[7*9+3],&grid[8*9+3]},
-		{&grid[0*9+4],&grid[1*9+4],&grid[2*9+4],&grid[3*9+4],&grid[4*9+4],&grid[5*9+4],&grid[6*9+4],&grid[7*9+4],&grid[8*9+4]},
-		{&grid[0*9+5],&grid[1*9+5],&grid[2*9+5],&grid[3*9+5],&grid[4*9+5],&grid[5*9+5],&grid[6*9+5],&grid[7*9+5],&grid[8*9+5]},
-
-		{&grid[0*9+6],&grid[1*9+6],&grid[2*9+6],&grid[3*9+6],&grid[4*9+6],&grid[5*9+6],&grid[6*9+6],&grid[7*9+6],&grid[8*9+6]},
-		{&grid[0*9+7],&grid[1*9+7],&grid[2*9+7],&grid[3*9+7],&grid[4*9+7],&grid[5*9+7],&grid[6*9+7],&grid[7*9+7],&grid[8*9+7]},
-		{&grid[0*9+8],&grid[1*9+8],&grid[2*9+8],&grid[3*9+8],&grid[4*9+8],&grid[5*9+8],&grid[6*9+8],&grid[7*9+8],&grid[8*9+8]},
-	
-		// boxes
-		{&grid[0*9+0],&grid[0*9+1],&grid[0*9+2],&grid[1*9+0],&grid[1*9+1],&grid[1*9+2],&grid[2*9+0],&grid[2*9+1],&grid[2*9+2]},
-		{&grid[3*9+0],&grid[3*9+1],&grid[3*9+2],&grid[4*9+0],&grid[4*9+1],&grid[4*9+2],&grid[5*9+0],&grid[5*9+1],&grid[5*9+2]},
-		{&grid[6*9+0],&grid[6*9+1],&grid[6*9+2],&grid[7*9+0],&grid[7*9+1],&grid[7*9+2],&grid[8*9+0],&grid[8*9+1],&grid[8*9+2]},
-		
-		{&grid[0*9+3],&grid[0*9+4],&grid[0*9+5],&grid[1*9+3],&grid[1*9+4],&grid[1*9+5],&grid[2*9+3],&grid[2*9+4],&grid[2*9+5]},
-		{&grid[3*9+3],&grid[3*9+4],&grid[3*9+5],&grid[4*9+3],&grid[4*9+4],&grid[4*9+5],&grid[5*9+3],&grid[5*9+4],&grid[5*9+5]},
-		{&grid[6*9+3],&grid[6*9+4],&grid[6*9+5],&grid[7*9+3],&grid[7*9+4],&grid[7*9+5],&grid[8*9+3],&grid[8*9+4],&grid[8*9+5]},
-		
-		{&grid[0*9+6],&grid[0*9+7],&grid[0*9+8],&grid[1*9+6],&grid[1*9+7],&grid[1*9+8],&grid[2*9+6],&grid[2*9+7],&grid[2*9+8]},
-		{&grid[3*9+6],&grid[3*9+7],&grid[3*9+8],&grid[4*9+6],&grid[4*9+7],&grid[4*9+8],&grid[5*9+6],&grid[5*9+7],&grid[5*9+8]},
-		{&grid[6*9+6],&grid[6*9+7],&grid[6*9+8],&grid[7*9+6],&grid[7*9+7],&grid[7*9+8],&grid[8*9+6],&grid[8*9+7],&grid[8*9+8]}};
-		(void)rcb_pair_least;
+	PairLogic_Least rcb_pair_least[27]=sudoku_27;
+	(void)rcb_pair_least;
 
 	// Add the values
 	for(int row=0;row<9;row++)
