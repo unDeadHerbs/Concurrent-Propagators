@@ -36,12 +36,12 @@ CODE_FILES    = $(CCODE_FILES) $(CPPCODE_FILES)
 # Describe the actual program structure.
 # These This is the only important line for building the program.
 ##
-execution: execution.o
+execution_test: execution.o execution_test.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-all: execution
+all: execution_test
 clean_targets:
-	-rm execution
+	-rm execution_test
 
 ##
 # Code to check for `#include' statements.
