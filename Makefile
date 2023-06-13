@@ -12,7 +12,8 @@
 SHELL = /bin/bash
 #COLOR = $(shell echo $$TERM|grep color > /dev/null && echo always || echo auto)
 COLOR = always
-CXX = clang++
+#CXX = clang++
+CXX = /usr/lib/llvm/16/bin/clang++
 LanguageVersion = -std=c++20
 Warnings = -Wall -Werror -Wextra -Wshadow
 NoWarn = -Wno-dangling-else -Wno-c++98-compat -Wno-padded -Wno-missing-prototypes -Wno-dangling-else -Wno-old-style-cast -Wno-unused-macros -Wno-comma -Wno-return-std-move
@@ -35,12 +36,12 @@ CODE_FILES    = $(CCODE_FILES) $(CPPCODE_FILES)
 # Describe the actual program structure.
 # These This is the only important line for building the program.
 ##
-sudoku: sudoku.o
+execution: execution.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-all: sudoku
+all: execution
 clean_targets:
-	-rm sudoku
+	-rm execution
 
 ##
 # Code to check for `#include' statements.
