@@ -1,1 +1,22 @@
-This is a program that solves simple sudokus using propagators.  This is a learning exercise.
+This is a playground for unifying propagators, pipe-operators, and Erlang's ideas about reliability.
+
+* v1 (Tag)
+A quick implementation of propagators to ground my understanding.
+- Made a "Hello World" example
+- Made a Sudoku solver
+* v2 (Current)
+A simple version of the execution environment to test out an API.
+- Added a factorial example
+* Future (In Approximate Order)
+1. Build a dummy Language (LISP) that is compiled to C++
+2. Build a standard library and Language features
+	 - Wire Bus/Bundling
+	 - [[https://rxmarbles.com/][Pipe Operators]]
+	 - In Language Composability
+		 - Similar to Sub-Circuit/Block in Spice
+3. Make the Environment parallel
+4. Build a ZUI for exploring the structures
+	 - Something between [[https://www.youtube.com/watch?v=bZRkjYnJggw][Eagle Mode]], Simulink, and LabView
+	 - Hopefully avoiding the horror of most graphical languages
+		 - This is part of why factorial and Sudoku are driving examples,
+       they both don't fit well with traditional visual paradigms
